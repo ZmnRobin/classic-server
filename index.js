@@ -10,19 +10,18 @@ const app=express();
 app.use(bodyParser.json());
 app.use(cors());
 
-const port=5000;
+const PORT=5000;
 
 const uri=process.env.MONGO_URI
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
-
-client.connect(err => {
-  const serviceCollection = client.db("ClassicMotor").collection("Services");
-  const reviewCollection=client.db("ClassicMotor").collection("Reviews");
-  const bookingCollection=client.db("ClassicMotor").collection("Booking");
-  const adminCollection=client.db("ClassicMotor").collection("Admin");
+// const serviceCollection = client.db("ClassicMotor").collection("Services");
+//   const reviewCollection=client.db("ClassicMotor").collection("Reviews");
+//   const bookingCollection=client.db("ClassicMotor").collection("Booking");
+//   const adminCollection=client.db("ClassicMotor").collection("Admin");
 
   app.post('/addServices',async(req,res)=>{
+      const serviceCollection = client.db("ClassicMotor").collection("Services");
       const service=req.body;
       await serviceCollection.insertOne(service)
       .then(result=>{
@@ -32,6 +31,7 @@ client.connect(err => {
 
 
   app.post('/addReview',async(req,res)=>{
+    const reviewCollection=client.db("ClassicMotor").collection("Reviews");
     const review=req.body;
     await reviewCollection.insertOne(review)
     .then(result=>{
@@ -40,6 +40,7 @@ client.connect(err => {
 })
 
   app.get('/allServices',async(req,res)=>{
+    const serviceCollection = client.db("ClassicMotor").collection("Services");
     await serviceCollection.find()
     .toArray((err,services)=>{
       res.send(services)
@@ -54,6 +55,7 @@ client.connect(err => {
     })
 
   app.get('/allReviews',async(req,res)=>{
+    const reviewCollection=client.db("ClassicMotor").collection("Reviews");
     await reviewCollection.find()
     .toArray((err,reviews)=>{
       res.send(reviews)
@@ -61,6 +63,7 @@ client.connect(err => {
   })
 
     app.post('/addBooking',async(req,res)=>{
+      const bookingCollection=client.db("ClassicMotor").collection("Booking");
       const booking=req.body;
       await bookingCollection.insertOne(booking)
       .then(result=>{
@@ -69,6 +72,7 @@ client.connect(err => {
     })
 
     app.get('/bookingByEmail',async(req,res)=>{
+      const bookingCollection=client.db("ClassicMotor").collection("Booking");
       await bookingCollection.find({email:req.query.email})
       .toArray((err,booking)=>{
         res.send(booking)
@@ -76,6 +80,7 @@ client.connect(err => {
     })
 
     app.get('/allBooking',async(req,res)=>{
+      const bookingCollection=client.db("ClassicMotor").collection("Booking");
       await bookingCollection.find()
       .toArray((err,booking)=>{
         res.send(booking)
@@ -83,6 +88,7 @@ client.connect(err => {
     })
 
     app.post('/makeAdmin',async(req,res)=>{
+      const adminCollection=client.db("ClassicMotor").collection("Admin");
       const adminEmail=req.body;
       await adminCollection.insertOne(adminEmail)
       .then(result=>{
@@ -91,6 +97,7 @@ client.connect(err => {
   })
   
   app.post('/adminEmail',async(req,res)=>{
+    const adminCollection=client.db("ClassicMotor").collection("Admin");
     const email=req.body.email;
     await adminCollection.find({email:email})
     .toArray((err,admin)=>{
@@ -99,6 +106,7 @@ client.connect(err => {
 })
   
   app.patch('/update',async(req,res)=>{
+    const bookingCollection=client.db("ClassicMotor").collection("Booking");
     await bookingCollection.updateOne({_id: ObjectId(req.body.id)},
     {
       $set:{status:req.body.status}
@@ -108,10 +116,14 @@ client.connect(err => {
     })
   })
 
-});
-
 app.get('/',(req,res)=>{
     res.send('Hello,Server is working perfectly..!')
 })
 
-app.listen(process.env.PORT || port)
+client.connect(err => {
+    if(err){ console.error(err); return false;}
+    // connection to mongo is successful, listen for requests
+    app.listen(PORT, () => {
+        console.log("listening for requests");
+    })
+});
