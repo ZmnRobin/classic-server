@@ -22,84 +22,84 @@ client.connect(err => {
   const bookingCollection=client.db("ClassicMotor").collection("Booking");
   const adminCollection=client.db("ClassicMotor").collection("Admin");
 
-  app.post('/addServices',(req,res)=>{
+  app.post('/addServices',async(req,res)=>{
       const service=req.body;
-      serviceCollection.insertOne(service)
+      await serviceCollection.insertOne(service)
       .then(result=>{
           res.send(result.insertedCount>0)
       })
   })
 
 
-  app.post('/addReview',(req,res)=>{
+  app.post('/addReview',async(req,res)=>{
     const review=req.body;
-    reviewCollection.insertOne(review)
+    await reviewCollection.insertOne(review)
     .then(result=>{
         res.send(result.insertedCount>0)
     })
 })
 
-  app.get('/allServices',(req,res)=>{
-    serviceCollection.find()
+  app.get('/allServices',async(req,res)=>{
+    await serviceCollection.find()
     .toArray((err,services)=>{
       res.send(services)
     })
   })
 
-    app.delete('/deleteService/:id',(req,res)=>{
-      serviceCollection.deleteOne({_id: ObjectId(req.params.id)})
+    app.delete('/deleteService/:id',async(req,res)=>{
+      await serviceCollection.deleteOne({_id: ObjectId(req.params.id)})
       .then(result=>{
         res.send(result.deletedCount>0)
       })
     })
 
-  app.get('/allReviews',(req,res)=>{
-    reviewCollection.find()
+  app.get('/allReviews',async(req,res)=>{
+    await reviewCollection.find()
     .toArray((err,reviews)=>{
       res.send(reviews)
     })
   })
 
-    app.post('/addBooking',(req,res)=>{
+    app.post('/addBooking',async(req,res)=>{
       const booking=req.body;
-      bookingCollection.insertOne(booking)
+      await bookingCollection.insertOne(booking)
       .then(result=>{
           res.send(result.insertedCount>0)
       })
     })
 
-    app.get('/bookingByEmail',(req,res)=>{
-      bookingCollection.find({email:req.query.email})
+    app.get('/bookingByEmail',async(req,res)=>{
+      await bookingCollection.find({email:req.query.email})
       .toArray((err,booking)=>{
         res.send(booking)
       })
     })
 
-    app.get('/allBooking',(req,res)=>{
-      bookingCollection.find()
+    app.get('/allBooking',async(req,res)=>{
+      await bookingCollection.find()
       .toArray((err,booking)=>{
         res.send(booking)
       })
     })
 
-    app.post('/makeAdmin',(req,res)=>{
+    app.post('/makeAdmin',async(req,res)=>{
       const adminEmail=req.body;
-      adminCollection.insertOne(adminEmail)
+      await adminCollection.insertOne(adminEmail)
       .then(result=>{
           res.send(result.insertedCount>0)
       })
   })
   
-  app.post('/adminEmail',(req,res)=>{
+  app.post('/adminEmail',async(req,res)=>{
     const email=req.body.email;
-    adminCollection.find({email:email})
+    await adminCollection.find({email:email})
     .toArray((err,admin)=>{
       res.send(admin.length>0)
     })
 })
   
-  app.patch('/update',(req,res)=>{
-    bookingCollection.updateOne({_id: ObjectId(req.body.id)},
+  app.patch('/update',async(req,res)=>{
+    await bookingCollection.updateOne({_id: ObjectId(req.body.id)},
     {
       $set:{status:req.body.status}
     })
