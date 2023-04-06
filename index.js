@@ -15,11 +15,6 @@ const PORT=5000;
 const uri=process.env.MONGO_URI
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
-// const serviceCollection = client.db("ClassicMotor").collection("Services");
-//   const reviewCollection=client.db("ClassicMotor").collection("Reviews");
-//   const bookingCollection=client.db("ClassicMotor").collection("Booking");
-//   const adminCollection=client.db("ClassicMotor").collection("Admin");
-
   app.post('/addServices',async(req,res)=>{
       const serviceCollection = client.db("ClassicMotor").collection("Services");
       const service=req.body;
