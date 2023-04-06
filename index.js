@@ -12,9 +12,7 @@ app.use(cors());
 
 const port=5000;
 
-
-// const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.cigf8.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`;
-const uri='mongodb+srv://ClassicMotor:robin_new_user@cluster0.cigf8.mongodb.net/ClassicMotor?retryWrites=true&w=majority'
+const uri=process.env.MONGO_URI
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
 
